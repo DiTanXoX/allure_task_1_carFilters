@@ -52,6 +52,7 @@ async function downloadCarsAll() {
 	// Set brand filter to buttons
 	const dropdownMenuBrand = document.getElementById('carBrandDropdown');
 	dropdownMenuBrand.innerHTML = '';
+	
 
 	let carBrands = cars.map(car => car.brand).filter((brand, index, self) => self.indexOf(brand) === index).sort();
 
@@ -62,6 +63,7 @@ async function downloadCarsAll() {
 	bElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 	bElement.onclick = function() {
 		filterCarsByBrand('all');
+		setModelByBrandColorPrice();
 	};
 	bElement.value = 'false';
 	dropdownMenuBrand.appendChild(bElement);
@@ -74,18 +76,63 @@ async function downloadCarsAll() {
 		aElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 		aElement.onclick = function() {
 			filterCarsByBrand(brand);
+			setModelByBrandColorPrice();
 		};
 		aElement.value = 'false';
 	
 		dropdownMenuBrand.appendChild(aElement);
 	});
 
+	function setModelByBrandColorPrice() {
+		// Set model filter to buttons
+		const dropdownMenuModel = document.getElementById('carModelDropdown');
+		dropdownMenuModel.innerHTML = '';
+
+		let carModels = filteredCars.map(car => car.model).filter((model, index, self) => self.indexOf(model) === index).sort();
+
+		// All model
+		const mElement = document.createElement('button');
+		mElement.id = 'filterButtonModelIdCar-all';
+		mElement.textContent = 'All models';
+		mElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
+		mElement.onclick = function() {
+			switchCarByModel('all');
+		};
+		mElement.value = 'false';
+		dropdownMenuModel.appendChild(mElement);
+
+		// Specific model
+		carModels.forEach(model => {
+			const aElement = document.createElement('button');
+			aElement.id = 'filterButtonModelIdCar-' + model;
+			aElement.textContent = model;
+			aElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
+			aElement.onclick = function() {
+				switchCarByModel(model);
+			};
+			aElement.value = 'false';
+			dropdownMenuModel.appendChild(aElement);
+		});
+	}
+
+	
+
 	// Set color filter to buttons
 	const dropdownMenuColor = document.getElementById('carColorDropdown');
 	dropdownMenuColor.innerHTML = '';
 
-	let carColors = cars.map(car => car.color === 'gray' ? 'grey' : car.color)
-                    	.filter((color, index, self) => self.indexOf(color) === index);
+	let carColors = cars.map(car => car.color === 'gray' ? 'grey' : car.color).filter((color, index, self) => self.indexOf(color) === index);
+
+	const cElement = document.createElement('button');
+	cElement.id = 'filterButtonColorIdCar-all';
+	cElement.textContent = 'All colors';
+	cElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
+	cElement.onclick = function() {
+		filterCarsByColor('all');
+		setModelByBrandColorPrice();
+	};
+	cElement.value = 'false';
+	dropdownMenuColor.appendChild(cElement);
 
 	carColors.forEach(color => {
 		const aElement = document.createElement('button');
@@ -99,11 +146,13 @@ async function downloadCarsAll() {
 		aElement.style.border = '1px solid grey';
 		aElement.onclick = function() {
 			filterCarsByColor(color);
+			setModelByBrandColorPrice();
 		};
 		aElement.value = 'false';
 	
 		dropdownMenuColor.appendChild(aElement);
 	});
+
 
 	// Set price filter to buttons
 	const dropdownMenuPrice = document.getElementById('carPriceDropdown');
@@ -128,6 +177,7 @@ async function downloadCarsAll() {
 	});
 
 	priceSlider.on('change', handleSliderChangeCar);
+	priceSlider.on('change', setModelByBrandColorPrice);
 
     return cars;
 }

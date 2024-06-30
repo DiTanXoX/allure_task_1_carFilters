@@ -38,9 +38,10 @@ var currMinPriceCar = -1;
 var currMinPriceYach = -1;
 var currMinPricePla = -1;
 
-var currCarBrand = '';
-var currCarModel = '';
-var currCarColor = '';
+let currCarBrand = 'all';
+let currCarModel = 'all';
+let currCarColor = 'all';
+let currCarPrive = [0, Infinity];
 
 var currPageCar = 1;
 var currService = 0;
@@ -60,6 +61,7 @@ var citySelected = '';
 var pplSelected = 0;
 var stDateSelected = '';
 var enDateSelected = '';
+var filteredCars = '';
 
 /* Set visible first service */	//**************************************************
 // Reset all <div id="mainColumnX" class="serviceDiv col-12"> to invisible
@@ -104,24 +106,24 @@ addColumnsToRow('yac');
 addColumnsToRow('pla');
 
 /* DOM */ //**************************************************
-document.addEventListener('DOMContentLoaded', async function() {
-	// Cart	*****************************************
-	document.getElementById('totalRow').style.display = 'none';
-	document.getElementById('cartBadge').style.display = 'none';
+// document.addEventListener('DOMContentLoaded', async function() {
+// 	// Cart	*****************************************
+// 	document.getElementById('totalRow').style.display = 'none';
+// 	document.getElementById('cartBadge').style.display = 'none';
 
-    // Add buttons with pages to cars	*****************************************
-    totalCars = await getCountDocs("car");
-	addPageButtonsCars(totalCars);
+//     // Add buttons with pages to cars	*****************************************
+//     totalCars = await getCountDocs("car");
+// 	addPageButtonsCars(totalCars);
 
-	// Data from main page	*****************************************
-	// City
-	setCitiesDropdown();
-	// People
-	setPeopleDropdown();
+// 	// Data from main page	*****************************************
+// 	// City
+// 	setCitiesDropdown();
+// 	// People
+// 	setPeopleDropdown();
 
-	// Calendar	*****************************************
-	setCalendarFilter();
-});
+// 	// Calendar	*****************************************
+// 	setCalendarFilter();
+// });
 
 /* ON LOAD ONLOAD */ //**************************************************
 // Show service	based on URL
@@ -311,6 +313,7 @@ function createCardCar(car) {
     `;
 }
 
+// -----------------------1-----------------------
 function switchCarByColor(carId) {
     let car = cars.find(car => car.id === carId);
     if (!car) {
@@ -471,47 +474,62 @@ function addCardCar(car, column) {
     column.innerHTML += cardHTML;
 }
 
+
 function filterCarsByBrand(brand) {
-	let carRow = document.getElementById('carRow');
-	carRow.innerHTML = '';
+	currCarBrand = brand;
+	applyFilters();
 
-	addColumnsToRow('car');
+}
 
-	let columns = document.getElementsByClassName('col-car');
-	for (let i = 0; i < columns.length; i++) {
-		columns[i].innerHTML = '';
+
+function applyFilters() {
+    filteredCars = cars;
+	const carModelDisabledOrAbled = document.getElementById('dropdownMenuButtonCarModel');
+	carModelDisabledOrAbled.classList.add('disabled');
+
+    if (currCarBrand !== 'all') {
+        filteredCars = filteredCars.filter(car => car.brand === currCarBrand);
+		carModelDisabledOrAbled.classList.remove('disabled');
+    }
+
+	if (currCarModel !== 'all') {
+		filteredCars = filteredCars.filter(car => car.model === currCarModel);
 	}
 
-	let carAux;
+	if (currCarColor !== 'all') {
+        filteredCars = filteredCars.filter(car => car.color === currCarColor);
+    }
 
-	if (brand === 'all') {
-		carAux = cars;
-	} else {
-		carAux = cars.filter(car => car.brand === brand);
-	}
+    filteredCars = filteredCars.filter(car => car.price >= currCarPrive[0] && car.price <= currCarPrive[1]);
+    filteredCars.sort((a, b) => a.price - b.price);
 
-	addCardsToColumns('car', carAux, 0, false);
+    let carRow = document.getElementById('carRow');
+    carRow.innerHTML = '';
+    addColumnsToRow('car');
+
+    let columns = document.getElementsByClassName('col-car');
+    for (let i = 0; i < columns.length; i++) {
+        columns[i].innerHTML = '';
+    }
+
+    addCardsToColumns('car', filteredCars, 0, false);
+}
+
+function switchCarByModel(model) {
+	currCarModel = model;
+	applyFilters();
 }
 
 function filterCarsByColor(color) {
-	let carRow = document.getElementById('carRow');
-	carRow.innerHTML = '';
-
-	addColumnsToRow('car');
-
-	let columns = document.getElementsByClassName('col-car');
-	for (let i = 0; i < columns.length; i++) {
-		columns[i].innerHTML = '';
-	}
-
 	if (color === 'gray' || color === 'grey') {
 		color = ['gray', 'grey'];
 	}
 
-	let carAux = cars.filter(car => color.includes(car.color));
+	currCarColor = color;
+	applyFilters();
 
-	addCardsToColumns('car', carAux, 0, false);
 }
+
 
 function displayCarsPageNextPrev(direction) {
 	let nextPage = 0;
@@ -591,6 +609,8 @@ function scrollToTop(duration) {
     window.requestAnimationFrame(scrollStep);
 }
 
+// -----------------------3-----------------------
+
 /**
  * Price slider for cars.
  * @param {Array} values 
@@ -598,20 +618,8 @@ function scrollToTop(duration) {
 function handleSliderChangeCar(values) {
 	console.log("min: " + values[0] + " | max: " + values[1]);
 
-	let row = document.getElementById('carRow');
-	row.innerHTML = '';
-
-	addColumnsToRow('car');
-
-	let columns = document.getElementsByClassName('col-car');
-	for (let i = 0; i < columns.length; i++) {
-		columns[i].innerHTML = '';
-	}
-
-	let list = cars.filter(car => car.price >= values[0] && car.price <= values[1]);
-    list.sort((a, b) => a.price - b.price);
-
-	addCardsToColumns("car", list, 0, false);
+	currCarPrive = values;
+	applyFilters();
 }
 
 /**
