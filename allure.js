@@ -484,20 +484,37 @@ function filterCarsByBrand(brand) {
 
 function applyFilters() {
     filteredCars = cars;
+    const dropdownMenuButtonCarBrand = document.getElementById('dropdownMenuButtonCarBrand');
+    dropdownMenuButtonCarBrand.querySelector("b").textContent = 'Brand';
+
 	const carModelDisabledOrAbled = document.getElementById('dropdownMenuButtonCarModel');
+    carModelDisabledOrAbled.querySelector("b").textContent = 'Model';
+    carModelDisabledOrAbled.style.width = '120px';
+
+    const dropdownMenuButtonCarColor = document.getElementById('dropdownMenuButtonCarColor');
+    dropdownMenuButtonCarColor.querySelector("b").textContent = 'Color';
+    dropdownMenuButtonCarColor.querySelector("b").style.textTransform = 'capitalize';
 	carModelDisabledOrAbled.classList.add('disabled');
 
     if (currCarBrand !== 'all') {
         filteredCars = filteredCars.filter(car => car.brand === currCarBrand);
+        dropdownMenuButtonCarBrand.querySelector("b").textContent = currCarBrand;
 		carModelDisabledOrAbled.classList.remove('disabled');
     }
 
 	if (currCarModel !== 'all') {
 		filteredCars = filteredCars.filter(car => car.model === currCarModel);
+        carModelDisabledOrAbled.querySelector("b").textContent = currCarModel;
+        if (currCarModel.length > 10) {
+            carModelDisabledOrAbled.querySelector("b").style.fontSize = '12px';
+            carModelDisabledOrAbled.style.width = 'auto';
+            carModelDisabledOrAbled.style.padding = '5px 10px';
+        }
 	}
 
 	if (currCarColor !== 'all') {
         filteredCars = filteredCars.filter(car => car.color === currCarColor);
+        dropdownMenuButtonCarColor.querySelector("b").textContent = currCarColor;
     }
 
     filteredCars = filteredCars.filter(car => car.price >= currCarPrive[0] && car.price <= currCarPrive[1]);
@@ -609,7 +626,6 @@ function scrollToTop(duration) {
     window.requestAnimationFrame(scrollStep);
 }
 
-// -----------------------3-----------------------
 
 /**
  * Price slider for cars.

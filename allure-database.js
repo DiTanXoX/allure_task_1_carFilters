@@ -162,9 +162,30 @@ async function downloadCarsAll() {
 	sliderElement.id = 'filterButtonPriceIdCar';
 
 	dropdownMenuPrice.appendChild(sliderElement);
+	
+	// All prices
+	const pElement = document.createElement('button');
+	pElement.id = 'filterButtonPriceIdCar-all';
+	pElement.textContent = 'All prices';
+	pElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
+	pElement.style.margin = '10px 0 0 0';
+	pElement.style.borderRadius = '0';
+	pElement.style.width = '100%';
+	pElement.style.textAlign = 'center';
+	pElement.onclick = function() {
+		handleSliderChangeCar([minPriceCar, maxPriceCar]);
+		priceSlider.set([minPriceCar, maxPriceCar]);
+		setModelByBrandColorPrice();
+	};
+	pElement.value = 'false';
+	dropdownMenuPrice.appendChild(pElement);
+
+
+
+	
 
 	const priceSlider = noUiSlider.create(sliderElement, {
-		start: [maxPriceCar/4, maxPriceCar/2],
+		start: [minPriceCar, maxPriceCar],
 		step: 10,
 		tooltips: [
 			wNumb({decimals: 0}),
