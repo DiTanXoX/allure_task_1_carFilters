@@ -63,7 +63,7 @@ async function downloadCarsAll() {
 	bElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 	bElement.onclick = function() {
 		filterCarsByBrand('all');
-		setModelByBrandColorPrice();
+		setModelByBrandColorPrice(true);
 	};
 	bElement.value = 'false';
 	dropdownMenuBrand.appendChild(bElement);
@@ -76,19 +76,23 @@ async function downloadCarsAll() {
 		aElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 		aElement.onclick = function() {
 			filterCarsByBrand(brand);
-			setModelByBrandColorPrice();
+			setModelByBrandColorPrice(true);
 		};
 		aElement.value = 'false';
 	
 		dropdownMenuBrand.appendChild(aElement);
 	});
 
-	function setModelByBrandColorPrice() {
+	function setModelByBrandColorPrice(brandAll) {
 		// Set model filter to buttons
 		const dropdownMenuModel = document.getElementById('carModelDropdown');
 		dropdownMenuModel.innerHTML = '';
 
 		let carModels = filteredCars.map(car => car.model).filter((model, index, self) => self.indexOf(model) === index).sort();
+
+		if (brandAll) {
+			switchCarByModel('all');
+		} 
 
 		// All model
 		const mElement = document.createElement('button');
@@ -129,7 +133,7 @@ async function downloadCarsAll() {
 	cElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 	cElement.onclick = function() {
 		filterCarsByColor('all');
-		setModelByBrandColorPrice();
+		setModelByBrandColorPrice(false);
 	};
 	cElement.value = 'false';
 	dropdownMenuColor.appendChild(cElement);
@@ -146,7 +150,7 @@ async function downloadCarsAll() {
 		aElement.style.border = '1px solid grey';
 		aElement.onclick = function() {
 			filterCarsByColor(color);
-			setModelByBrandColorPrice();
+			setModelByBrandColorPrice(false);
 		};
 		aElement.value = 'false';
 	
@@ -175,7 +179,7 @@ async function downloadCarsAll() {
 	pElement.onclick = function() {
 		handleSliderChangeCar([minPriceCar, maxPriceCar]);
 		priceSlider.set([minPriceCar, maxPriceCar]);
-		setModelByBrandColorPrice();
+		setModelByBrandColorPrice(false);
 	};
 	pElement.value = 'false';
 	dropdownMenuPrice.appendChild(pElement);

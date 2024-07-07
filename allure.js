@@ -513,7 +513,8 @@ function applyFilters() {
 	}
 
 	if (currCarColor !== 'all') {
-        filteredCars = filteredCars.filter(car => car.color === currCarColor);
+        // filteredCars = filteredCars.filter(car => car.color === currCarColor);
+        filteredCars = filteredCars.filter(car => currCarColor.includes(car.color));
         dropdownMenuButtonCarColor.querySelector("b").textContent = currCarColor;
     }
 
