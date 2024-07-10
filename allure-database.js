@@ -63,7 +63,7 @@ async function downloadCarsAll() {
 	bElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 	bElement.onclick = function() {
 		filterCarsByBrand('all');
-		setModelByBrandColorPrice(true);
+		setModelByBrandColorPrice();
 	};
 	bElement.value = 'false';
 	dropdownMenuBrand.appendChild(bElement);
@@ -76,24 +76,20 @@ async function downloadCarsAll() {
 		aElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 		aElement.onclick = function() {
 			filterCarsByBrand(brand);
-			setModelByBrandColorPrice(true);
+			setModelByBrandColorPrice();
 		};
 		aElement.value = 'false';
 	
 		dropdownMenuBrand.appendChild(aElement);
 	});
 
-	function setModelByBrandColorPrice(brandAll) {
+	function setModelByBrandColorPrice() {
 		// Set model filter to buttons
 		const dropdownMenuModel = document.getElementById('carModelDropdown');
 		dropdownMenuModel.innerHTML = '';
 
 		let carModels = filteredCars.map(car => car.model).filter((model, index, self) => self.indexOf(model) === index).sort();
-
-		if (brandAll) {
-			switchCarByModel('all');
-		} 
-
+		
 		// All model
 		const mElement = document.createElement('button');
 		mElement.id = 'filterButtonModelIdCar-all';
@@ -133,7 +129,7 @@ async function downloadCarsAll() {
 	cElement.classList.add('btn', 'dropdown-item', 'btn-dropdown');
 	cElement.onclick = function() {
 		filterCarsByColor('all');
-		setModelByBrandColorPrice(false);
+		setModelByBrandColorPrice();
 	};
 	cElement.value = 'false';
 	dropdownMenuColor.appendChild(cElement);
@@ -150,7 +146,7 @@ async function downloadCarsAll() {
 		aElement.style.border = '1px solid grey';
 		aElement.onclick = function() {
 			filterCarsByColor(color);
-			setModelByBrandColorPrice(false);
+			setModelByBrandColorPrice();
 		};
 		aElement.value = 'false';
 	
@@ -179,7 +175,7 @@ async function downloadCarsAll() {
 	pElement.onclick = function() {
 		handleSliderChangeCar([minPriceCar, maxPriceCar]);
 		priceSlider.set([minPriceCar, maxPriceCar]);
-		setModelByBrandColorPrice(false);
+		setModelByBrandColorPrice();
 	};
 	pElement.value = 'false';
 	dropdownMenuPrice.appendChild(pElement);
